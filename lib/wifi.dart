@@ -5,7 +5,8 @@ import 'package:flutter/services.dart';
 enum WifiState { error, success, already }
 
 class Wifi {
-  static const MethodChannel _channel = const MethodChannel('plugins.ly.com/wifi');
+  static const MethodChannel _channel =
+      const MethodChannel('plugins.ly.com/wifi');
 
   static Future<String> get ssid async {
     return await _channel.invokeMethod('ssid');
@@ -26,7 +27,8 @@ class Wifi {
     var results = await _channel.invokeMethod('list', params);
     List<WifiResult> resultList = [];
     for (int i = 0; i < results.length; i++) {
-      resultList.add(WifiResult(results[i]['ssid'], results[i]['level']));
+      WifiSecurityType type = WifiSecurityType.values[results[i]['security']];
+      resultList.add(WifiResult(results[i]['ssid'], results[i]['level'], type));
     }
     return resultList;
   }
@@ -53,6 +55,9 @@ class Wifi {
 class WifiResult {
   String ssid;
   int level;
+  WifiSecurityType securityType;
 
-  WifiResult(this.ssid, this.level);
+  WifiResult(this.ssid, this.level, this.securityType);
 }
+
+enum WifiSecurityType { Open, WEP, WPA, WPA2 }

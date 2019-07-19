@@ -183,6 +183,19 @@ WifiDelegate implements PluginRegistry.RequestPermissionsResultListener {
             wifiManager.startScan();
             List<ScanResult> scanResultList = wifiManager.getScanResults();
             for (ScanResult scanResult : scanResultList) {
+                //get capabilities of current connection
+                String capabilities = scanResult.capabilities;
+
+                int securityType = 0;
+                
+                if (capabilities.contains("WPA2")) {
+                    securityType = 3;
+                } else if (capabilities.contains("WPA")) {
+                    securityType = 2;
+                } else if (capabilities.contains("WEP")) {
+                    securityType = 1;
+                }
+
                 int level;
                 if (scanResult.level <= 0 && scanResult.level >= -55) {
                     level = 3;
@@ -197,11 +210,13 @@ WifiDelegate implements PluginRegistry.RequestPermissionsResultListener {
                 if (key.isEmpty()) {
                     maps.put("ssid", scanResult.SSID);
                     maps.put("level", level);
+                    maps.put("security", securityType);
                     list.add(maps);
                 } else {
                     if (scanResult.SSID.contains(key)) {
                         maps.put("ssid", scanResult.SSID);
                         maps.put("level", level);
+                        maps.put("security", securityType);
                         list.add(maps);
                     }
                 }
