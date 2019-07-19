@@ -126,6 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           ),
           dense: true,
+          trailing: Text(ssidList[index - 1].securityType.toString()),
         ),
         Divider(),
       ]);
